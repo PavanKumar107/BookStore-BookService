@@ -22,9 +22,6 @@ public class BookService implements IBookService {
 	TokenUtil tokenUtil;
 
 	@Autowired
-	MailService mailService;
-
-	@Autowired
 	RestTemplate restTemplate;
 
 
