@@ -1,5 +1,6 @@
 package com.blz.bookstorebookservice.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,6 +26,8 @@ public class BookModel {
 	private String bookName;
 	private String bookAuthor;
 	private String bookDescription;
+	@Column(length = 1000)
+	private String bookLogo;
 	private long bookPrice;
 	private long bookQuantity;
 	
@@ -36,7 +39,4 @@ public class BookModel {
 		this.bookPrice = bookDto.getBookPrice();
 		this.bookQuantity = bookDto.getBookQuantity();
 	}
-
-	
-
 }

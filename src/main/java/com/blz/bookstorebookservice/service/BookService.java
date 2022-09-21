@@ -1,16 +1,21 @@
 package com.blz.bookstorebookservice.service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.blz.bookstorebookservice.dto.BookDto;
 import com.blz.bookstorebookservice.exception.CustomNotFoundException;
 import com.blz.bookstorebookservice.model.BookModel;
 import com.blz.bookstorebookservice.repository.BookRepository;
+import com.blz.bookstorebookservice.util.Response;
 import com.blz.bookstorebookservice.util.TokenUtil;
+
 
 @Service
 public class BookService implements IBookService {
@@ -92,6 +97,21 @@ public class BookService implements IBookService {
 	}
 	
 	@Override
+	public Response addBookLogo(Long bookId,MultipartFile bookLogo,String token) throws IOException {
+		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuser/" + token, Boolean.class);
+		if (isUserPresent) {
+		Optional<BookModel> isIdPresent = bookRepository.findById(bookId);
+		if(isIdPresent.isPresent()) {
+			isIdPresent.get().setBookLogo(String.valueOf(bookLogo.getBytes()));
+			bookRepository.save(isIdPresent.get());
+			return new Response("Success", 200, isIdPresent.get());
+		}
+		throw new CustomNotFoundException(400, "Book not found");
+		}
+		throw new CustomNotFoundException(400,"Invalid token");
+	}
+	
+	@Override
 	public BookModel changeBookQuanity(String token,Long bookId,Long quantity) {
 		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuser/" + token, Boolean.class);
 		if (isUserPresent) {
@@ -118,5 +138,12 @@ public class BookService implements IBookService {
 		}
 		throw new CustomNotFoundException(400,"Invalid token");
 	}
-
+	
+	@Override
+	public Boolean validateBook(Long bookId) {
+		Optional<BookModel> isTokenPresent = bookRepository.findById(bookId);
+		if (isTokenPresent.isPresent())
+			return true;
+		throw new CustomNotFoundException(400, "Token not found");
+	}
 }
