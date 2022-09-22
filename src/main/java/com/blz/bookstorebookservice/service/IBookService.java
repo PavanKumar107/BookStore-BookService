@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.blz.bookstorebookservice.dto.BookDto;
 import com.blz.bookstorebookservice.model.BookModel;
-import com.blz.bookstorebookservice.util.Response;
+import com.blz.bookstorebookservice.util.BookResponse;
 
 public interface IBookService {
 
@@ -26,9 +26,13 @@ public interface IBookService {
 
 	BookModel changeBookPrice(String token, Long bookId, Long price);
 
-	Boolean validateBook(Long bookId);
+	BookModel validateBook(Long bookId);
 
-	Response addBookLogo(Long bookId, MultipartFile bookLogo, String token) throws IOException;
+	BookResponse addBookLogo(Long bookId, MultipartFile bookLogo, String token) throws IOException;
+
+	BookResponse addingToCart(Long bookId, Long bookQuantity);
+
+	BookResponse removingFromCart(Long bookId, Long bookQuantity);
 
 //	Boolean validateBook(String token);
 
