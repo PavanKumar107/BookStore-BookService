@@ -10,6 +10,15 @@ import com.blz.bookstorebookservice.dto.BookDto;
 import com.blz.bookstorebookservice.model.BookModel;
 import com.blz.bookstorebookservice.util.BookResponse;
 
+/**
+ *  
+ * Purpose:Book Service Interface
+ * @author: Pavan Kumar G V 
+ * @version: 4.15.1.RELEASE
+ * 
+ **/
+
+
 public interface IBookService {
 
 	BookModel addBook(BookDto bookDto, String token);
@@ -26,7 +35,7 @@ public interface IBookService {
 
 	BookModel changeBookPrice(String token, Long bookId, Long price);
 
-	BookModel validateBook(Long bookId);
+	BookResponse validateBook(Long bookId);
 
 	BookResponse addBookLogo(Long bookId, MultipartFile bookLogo, String token) throws IOException;
 

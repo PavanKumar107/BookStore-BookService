@@ -13,6 +13,14 @@ import com.blz.bookstorebookservice.dto.BookDto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+/**
+ *  
+ * Purpose:Model class for the book
+ * 
+ * @author: Pavan Kumar G V 
+ * @version: 4.15.1.RELEASE
+ * 
+ **/ 
 
 @Entity
 @Table(name = "books")

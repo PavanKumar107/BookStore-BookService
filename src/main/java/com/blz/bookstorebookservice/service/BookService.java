@@ -16,8 +16,18 @@ import com.blz.bookstorebookservice.repository.BookRepository;
 import com.blz.bookstorebookservice.util.BookResponse;
 import com.blz.bookstorebookservice.util.TokenUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ *  
+ * Purpose:Service implementation of the book service
+ * @author: Pavan Kumar G V 
+ * @version: 4.15.1.RELEASE
+ * 
+ */
 
 @Service
+@Slf4j
 public class BookService implements IBookService {
 
 	@Autowired
@@ -29,10 +39,10 @@ public class BookService implements IBookService {
 	@Autowired
 	RestTemplate restTemplate;
 
-
+	//Purpose:method to add books 
 	@Override
 	public BookModel addBook(BookDto bookDto,String token) {
-		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuser/" + token, Boolean.class);
+		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuserid/" + token, Boolean.class);
 		if (isUserPresent) {
 			BookModel model = new BookModel(bookDto);
 			bookRepository.save(model);
@@ -41,9 +51,10 @@ public class BookService implements IBookService {
 		throw new CustomNotFoundException(400,"Invalid token");
 	}
 
+	//Purpose:method to update the books
 	@Override
 	public BookModel updateNote(BookDto bookDto,Long bookId, String token) {
-		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuser/"  + token, Boolean.class);
+		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuserid/"  + token, Boolean.class);
 		if (isUserPresent) {
 			Optional<BookModel> isBookPresent = bookRepository.findById(bookId);
 			if(isBookPresent.isPresent()) {
@@ -59,10 +70,12 @@ public class BookService implements IBookService {
 		throw new CustomNotFoundException(400,"Invalid token");
 	}
 
+	//Purpose:method to fetch all books
 	@Override
 	public List<BookModel> fetchBooks(String token) {
-		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuser/" + token, Boolean.class);
+		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuserid/" + token, Boolean.class);
 		if (isUserPresent) {
+			log.info("abc");
 			List<BookModel> readAllBooks = bookRepository.findAll();
 			if(readAllBooks.size()>0) {
 				return readAllBooks;	
@@ -73,18 +86,20 @@ public class BookService implements IBookService {
 		throw new CustomNotFoundException(400,"Invalid token");
 	}
 
+	//Purpose:method to fetch books by id
 	@Override
 	public Optional<BookModel> fetchBookById(Long bookId,String token) {
-		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuser/" + token, Boolean.class);
+		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuserid/" + token, Boolean.class);
 		if (isUserPresent) {
 			return bookRepository.findById(bookId);
 		}
 		throw new CustomNotFoundException(400,"Invalid token");
 	}
 
+	//Purpose:method to delete books 
 	@Override
 	public BookModel deletebook(Long bookId,String token) {
-		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuser/" + token, Boolean.class);
+		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuserid/" + token, Boolean.class);
 		if (isUserPresent) {
 			Optional<BookModel> isBookPresent = bookRepository.findById(bookId);
 			if(isBookPresent.isPresent()) {
@@ -96,9 +111,10 @@ public class BookService implements IBookService {
 		throw new CustomNotFoundException(400,"Invalid token");
 	}
 
+	//Purpose:method to add book logo
 	@Override
 	public BookResponse addBookLogo(Long bookId,MultipartFile bookLogo,String token) throws IOException {
-		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuser/" + token, Boolean.class);
+		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuserid/" + token, Boolean.class);
 		if (isUserPresent) {
 			Optional<BookModel> isIdPresent = bookRepository.findById(bookId);
 			if(isIdPresent.isPresent()) {
@@ -111,9 +127,10 @@ public class BookService implements IBookService {
 		throw new CustomNotFoundException(400,"Invalid token");
 	}
 
+	//Purpose:method to change book quantity
 	@Override
 	public BookModel changeBookQuanity(String token,Long bookId,Long quantity) {
-		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuser/" + token, Boolean.class);
+		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuserid/" + token, Boolean.class);
 		if (isUserPresent) {
 			Optional<BookModel> isBookPresent = bookRepository.findById(bookId);
 			if(isBookPresent.isPresent()) {
@@ -125,9 +142,10 @@ public class BookService implements IBookService {
 		throw new CustomNotFoundException(400,"Invalid token");
 	}
 
+	//Purpose:method to change book price
 	@Override
 	public BookModel changeBookPrice(String token,Long bookId,Long price) {
-		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuser/" + token, Boolean.class);
+		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuserid/" + token, Boolean.class);
 		if (isUserPresent) {
 			Optional<BookModel> isBookPresent = bookRepository.findById(bookId);
 			if(isBookPresent.isPresent()) {
@@ -139,27 +157,31 @@ public class BookService implements IBookService {
 		throw new CustomNotFoundException(400,"Invalid token");
 	}
 
+	//Purpose:method to validate book
 	@Override
-	public BookModel validateBook(Long bookId) {
+	public BookResponse validateBook(Long bookId) {
 		Optional<BookModel> isBookPresent = bookRepository.findById(bookId);
 		if (isBookPresent.isPresent()) {
-			return isBookPresent.get();
+		return new BookResponse("Sucess", 200, isBookPresent.get());
+		
 		}
 		throw new CustomNotFoundException(400,"user not found");
 
 	}
 
+	//Purpose:method to change book quatity after adding book to the cart
 	@Override
 	public BookResponse addingToCart(Long bookId, Long bookQuantity) {
 		Optional<BookModel> isBookPresent = bookRepository.findById(bookId);
 		if(isBookPresent.isPresent()) {
-			isBookPresent.get().setBookQuantity(isBookPresent.get().getBookQuantity()- bookQuantity);
+			isBookPresent.get().setBookQuantity(isBookPresent.get().getBookQuantity() - bookQuantity);
 			bookRepository.save(isBookPresent.get());
 			return new BookResponse ("book quantity updated sucessfully after adding book to cart", 200,isBookPresent.get());
 		}
 		throw new CustomNotFoundException(400, "Book not found");
 	}
 
+	//Purpose:method to change book quatity after removing book to the cart
 	@Override
 	public BookResponse removingFromCart(Long bookId,Long bookQuantity ) {
 		Optional<BookModel> isBookPresent = bookRepository.findById(bookId);

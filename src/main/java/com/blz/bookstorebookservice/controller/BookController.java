@@ -22,81 +22,143 @@ import com.blz.bookstorebookservice.service.IBookService;
 import com.blz.bookstorebookservice.util.BookResponse;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
+/**
+ * Purpose: Book Controller to process User Data APIs.
+ * @version: 4.15.1.RELEASE
+ * @author: Pavan Kumar G V
+ *   
+ */
+
 @RestController
 @RequestMapping("/bookservice")
 public class BookController {
-	
+
 	@Autowired
 	IBookService bookService;
-	
+
+	/**
+	 * Purpose:To add book
+	 * @Param: token , bookDto
+	 * 
+	 */
 	@PostMapping("/add")
 	public ResponseEntity<BookResponse>  addBook(@RequestBody BookDto bookDto,@RequestHeader String token) {
 		BookModel bookModel = bookService.addBook(bookDto,token);
 		BookResponse response = new BookResponse("Book added sucessfully", 200, bookModel);
 		return new ResponseEntity<>(response, HttpStatus.OK);	
 	}
-	
+
+	/**
+	 * Purpose:To update book
+	 * @Param: token , bookDto,bookId
+	 * 
+	 */
 	@PutMapping("/update/{bookId}")
 	public ResponseEntity<BookResponse> updateNote(@RequestBody BookDto bookDto,@PathVariable Long bookId,@RequestHeader String token) {
 		BookModel bookModel = bookService.updateNote(bookDto,bookId,token);
 		BookResponse response = new BookResponse("Book updated sucessfully", 200, bookModel);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
-	
+
+	/**
+	 * Purpose: to fetch all books
+	 * @Param: token
+	 * 
+	 */
 	@GetMapping("/read")
 	public ResponseEntity<BookResponse> fetchBooks(@RequestHeader String token) {
 		List<BookModel> bookModel = bookService.fetchBooks(token);
 		BookResponse response = new BookResponse("Fetching books sucessfully", 200, bookModel);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
-	
+
+	/**
+	 * Purpose: to add logo to the book
+	 * @Param: token,bookId,bookLogo
+	 * 
+	 */
 	@PostMapping("/addbooklogo/{bookId}")
 	public ResponseEntity<BookResponse> addBookLogo(@PathVariable Long bookId,@RequestParam MultipartFile bookLogo,@RequestHeader String token) throws IOException {
 		BookResponse bookModel = bookService.addBookLogo(bookId,bookLogo,token);
 		BookResponse response = new BookResponse("Book logo uploaded sucessfully ", 200, bookModel);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
-	
+
+	/**
+	 * Purpose: to fetch all books by id
+	 * @Param: token,bookId
+	 * 
+	 */
 	@GetMapping("/readbyid/{bookId}")
 	public ResponseEntity<BookResponse> fetchBookById(@PathVariable Long bookId,@RequestHeader String token) {
 		Optional<BookModel> bookModel = bookService.fetchBookById(bookId, token);
 		BookResponse response = new BookResponse("Fetching book by id successfully", 200, bookModel);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
-	
+
+	/**
+	 * Purpose: to delete book
+	 * @Param: token,bookId
+	 * 
+	 */
 	@DeleteMapping("/delete/{bookId}")
 	public ResponseEntity<BookResponse> deletebook(@PathVariable Long bookId,@RequestHeader String token) {
 		BookModel bookModel = bookService.deletebook(bookId,token);
 		BookResponse response = new BookResponse("Book deleted sucessfully", 200, bookModel);
 		return new ResponseEntity<>(response, HttpStatus.OK);	
 	}
-	
+
+	/**
+	 * Purpose: to change quantity of the books
+	 * @Param: token,bookId,quantity
+	 * 
+	 */
 	@PutMapping("/changebookquantity/{bookId}")
 	public ResponseEntity<BookResponse> changeBookQuanity(@RequestHeader String token,@PathVariable Long bookId,@RequestParam Long quantity) {
 		BookModel bookModel = bookService.changeBookQuanity(token,bookId,quantity);
 		BookResponse response = new BookResponse("Books quantity changed sucessfully", 200, bookModel);
 		return new ResponseEntity<>(response, HttpStatus.OK);	
 	}
-	
+
+	/**
+	 * Purpose: to change price of the book
+	 * @Param: token,bookId,price
+	 * 
+	 */
 	@PutMapping("/changebookprice/{bookId}")
 	public ResponseEntity<BookResponse> changeBookPrice(@RequestHeader String token,@PathVariable Long bookId,@RequestParam Long price) {
 		BookModel bookModel = bookService.changeBookPrice(token,bookId,price);
 		BookResponse response = new BookResponse("Book price changed sucessfully", 200, bookModel);
 		return new ResponseEntity<>(response, HttpStatus.OK);	
 	}
-	
-	@PutMapping("/validatebookid/{bookId}")
-	public BookModel validateBook(@PathVariable Long bookId) {
+
+	/**
+	 * Purpose: to validate bookId
+	 * @Param: bookId
+	 * 
+	 */
+	@GetMapping("/validatebookid/{bookId}")
+	public BookResponse validateBook(@PathVariable Long bookId) {
 		return bookService.validateBook(bookId);
 	}
-	
-	@PutMapping("/addingtocart/{bookId}/{bookQuantity}")
+
+	/**
+	 * Purpose: book quantity after adding book to the cart
+	 * @Param: bookId,bookQuantity
+	 * 
+	 */
+	@GetMapping("/addingtocart/{bookId}/{bookQuantity}")
 	public BookResponse addingToCart(@PathVariable Long bookId,@PathVariable Long bookQuantity) {
 		return bookService.addingToCart(bookId, bookQuantity);
 	}
-	
-	@PutMapping("/removefromcart/{bookId}/{bookQuantity}")
-	public BookResponse removingFromCart(Long bookId,Long bookQuantity ) {
+
+	/**
+	 * Purpose: book quantity after removing book from cart
+	 * @Param: bookId,bookQuantity
+	 * 
+	 */
+	@GetMapping("/removefromcart/{bookId}/{bookQuantity}")
+	public BookResponse removingFromCart(@PathVariable Long bookId,@PathVariable Long bookQuantity ) {
 		return bookService.removingFromCart(bookId, bookQuantity);
 	}
 }
