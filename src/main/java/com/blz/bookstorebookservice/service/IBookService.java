@@ -43,6 +43,10 @@ public interface IBookService {
 
 	BookResponse removingFromCart(Long bookId, Long bookQuantity);
 
+	List<BookModel>  fetchByBookName(String bookName, String token);
+	
+	List<BookModel>  fetchByBookAuthor(String bookAuthor, String token);
+
 //	Boolean validateBook(String token);
 
 }

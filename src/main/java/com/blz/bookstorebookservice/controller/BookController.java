@@ -161,4 +161,28 @@ public class BookController {
 	public BookResponse removingFromCart(@PathVariable Long bookId,@PathVariable Long bookQuantity ) {
 		return bookService.removingFromCart(bookId, bookQuantity);
 	}
+	
+	/**
+	 * Purpose: to fetch all books by book name
+	 * @Param: token,bookname
+	 * 
+	 */
+	@GetMapping("/fetchbybookname/{bookName}")
+	public ResponseEntity<BookResponse> fetchByBookName(@PathVariable String bookName,@RequestHeader String token) {
+		List<BookModel> bookModel = bookService.fetchByBookName(bookName,token);
+		BookResponse response = new BookResponse("fetching books by book name", 200, bookModel);
+		return new ResponseEntity<>(response, HttpStatus.OK);	
+	}
+	
+	/**
+	 * Purpose: to fetch all books by book author
+	 * @Param: token,bookauthor
+	 * 
+	 */
+	@GetMapping("/fetchbybookauthor/{bookAuthor}")
+	public ResponseEntity<BookResponse> fetchByBookAuthor(@PathVariable String bookAuthor,@RequestHeader String token) {
+		List<BookModel> bookModel = bookService.fetchByBookAuthor(bookAuthor,token);
+		BookResponse response = new BookResponse("fetching books by book Author", 200, bookModel);
+		return new ResponseEntity<>(response, HttpStatus.OK);	
+	}
 }

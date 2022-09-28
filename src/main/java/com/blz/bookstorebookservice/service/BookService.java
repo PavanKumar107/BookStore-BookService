@@ -181,7 +181,7 @@ public class BookService implements IBookService {
 		throw new CustomNotFoundException(400, "Book not found");
 	}
 
-	//Purpose:method to change book quatity after removing book to the cart
+	//Purpose:method to change book quantity after removing book to the cart
 	@Override
 	public BookResponse removingFromCart(Long bookId,Long bookQuantity ) {
 		Optional<BookModel> isBookPresent = bookRepository.findById(bookId);
@@ -192,5 +192,23 @@ public class BookService implements IBookService {
 		}
 		throw new CustomNotFoundException(400, "Book not found");
 	}
+	
+	//Purpose:method to fetch books by book name
+	@Override
+	public List<BookModel> fetchByBookName(String bookName,String token) {
+		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuserid/" + token, Boolean.class);
+		if (isUserPresent) {
+			return bookRepository.findByBookName(bookName);
+		}
+		throw new CustomNotFoundException(400,"Invalid token");
+	}
 
+	@Override
+	public List<BookModel> fetchByBookAuthor(String bookAuthor, String token) {
+		boolean isUserPresent = restTemplate.getForObject("http://BookStore-UserService:8068/userservice/validateuserid/" + token, Boolean.class);
+		if (isUserPresent) {
+			return bookRepository.findByBookAuthor(bookAuthor);
+		}
+		throw new CustomNotFoundException(400,"Invalid token");
+	}
 }
